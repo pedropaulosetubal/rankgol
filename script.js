@@ -1,300 +1,138 @@
-const campeonatos = {
-  brasileirao: {
-    nome: "Brasileirão Série A",
-    times: [
-      {
-        posicao: 1,
-        nome: "Flamengo",
-        pontos: 42,
-        titulos: 8,
-        artilheiro: "Pedro",
-        gols: 18,
-        melhorJogador: "Arrascaeta",
-        destaque: "Meia criativo"
-      },
-      {
-        posicao: 2,
-        nome: "Palmeiras",
-        pontos: 39,
-        titulos: 12,
-        artilheiro: "Raphael Veiga",
-        gols: 14,
-        melhorJogador: "Gustavo Gómez",
-        destaque: "Líder defensivo"
-      },
-      {
-        posicao: 3,
-        nome: "Atlético-MG",
-        pontos: 36,
-        titulos: 3,
-        artilheiro: "Hulk",
-        gols: 13,
-        melhorJogador: "Guilherme Arana",
-        destaque: "Lateral ofensivo"
-      },
-      {
-        posicao: 4,
-        nome: "São Paulo",
-        pontos: 33,
-        titulos: 6,
-        artilheiro: "Luciano",
-        gols: 11,
-        melhorJogador: "Lucas Moura",
-        destaque: "Velocidade e criação"
-      },
-      {
-        posicao: 5,
-        nome: "Corinthians",
-        pontos: 30,
-        titulos: 7,
-        artilheiro: "Yuri Alberto",
-        gols: 10,
-        melhorJogador: "Rodrigo Garro",
-        destaque: "Organização ofensiva"
-      },
-      {
-        posicao: 6,
-        nome: "Grêmio",
-        pontos: 28,
-        titulos: 2,
-        artilheiro: "Cristaldo",
-        gols: 9,
-        melhorJogador: "Kannemann",
-        destaque: "Referência defensiva"
-      }
-    ]
-  },
+// ===============================
+// RANKGOL - SCRIPT PRINCIPAL
+// ===============================
 
-  champions: {
-    nome: "Champions League",
-    times: [
-      {
-        posicao: 1,
-        nome: "Real Madrid",
-        pontos: 44,
-        titulos: 15,
-        artilheiro: "Kylian Mbappé",
-        gols: 15,
-        melhorJogador: "Jude Bellingham",
-        destaque: "Meia completo"
-      },
-      {
-        posicao: 2,
-        nome: "Manchester City",
-        pontos: 41,
-        titulos: 1,
-        artilheiro: "Erling Haaland",
-        gols: 12,
-        melhorJogador: "Kevin De Bruyne",
-        destaque: "Criação de jogo"
-      },
-      {
-        posicao: 3,
-        nome: "Bayern de Munique",
-        pontos: 39,
-        titulos: 6,
-        artilheiro: "Harry Kane",
-        gols: 14,
-        melhorJogador: "Jamal Musiala",
-        destaque: "Talento ofensivo"
-      },
-      {
-        posicao: 4,
-        nome: "Barcelona",
-        pontos: 35,
-        titulos: 5,
-        artilheiro: "Robert Lewandowski",
-        gols: 10,
-        melhorJogador: "Pedri",
-        destaque: "Controle de meio-campo"
-      },
-      {
-        posicao: 5,
-        nome: "Paris Saint-Germain",
-        pontos: 32,
-        titulos: 1,
-        artilheiro: "Ousmane Dembélé",
-        gols: 8,
-        melhorJogador: "Vitinha",
-        destaque: "Equilíbrio técnico"
-      },
-      {
-        posicao: 6,
-        nome: "Liverpool",
-        pontos: 30,
-        titulos: 6,
-        artilheiro: "Mohamed Salah",
-        gols: 9,
-        melhorJogador: "Virgil van Dijk",
-        destaque: "Liderança defensiva"
-      }
-    ]
-  }
-};
-
-const usuarios = [
+// Usuários simulados da plataforma
+let usuarios = [
   {
-    nome: "Pedro Paulo Lopes",
-    email: "pedro@rankgol.com",
-    categoria: "Administrador",
+    nome: "Pedro Paulo",
+    email: "pedro@email.com",
     status: "Ativo"
   },
   {
-    nome: "Ana Souza",
-    email: "ana@rankgol.com",
-    categoria: "Editor",
-    status: "Ativo"
-  },
-  {
-    nome: "Carlos Lima",
-    email: "carlos@rankgol.com",
-    categoria: "Usuário comum",
+    nome: "Usuário Teste",
+    email: "teste@email.com",
     status: "Inativo"
   }
 ];
 
-const tabelaRanking = document.getElementById("tabela-ranking");
-const listaTimes = document.getElementById("lista-times");
-const listaTitulos = document.getElementById("lista-titulos");
-const listaArtilheiros = document.getElementById("lista-artilheiros");
-const listaMelhores = document.getElementById("lista-melhores");
+// ===============================
+// TROCA DE CAMPEONATOS
+// ===============================
 
-const totalTimes = document.getElementById("total-times");
-const totalTitulos = document.getElementById("total-titulos");
-const totalArtilheiros = document.getElementById("total-artilheiros");
+function mostrarCampeonato(campeonato) {
+  const campeonatos = document.querySelectorAll(".campeonato");
+  const botoes = document.querySelectorAll(".tab-btn");
 
-const tabelaUsuarios = document.getElementById("tabela-usuarios");
-const nomeUsuario = document.getElementById("nome-usuario");
-const emailUsuario = document.getElementById("email-usuario");
-const categoriaUsuario = document.getElementById("categoria-usuario");
-
-function limparConteudoRanking() {
-  tabelaRanking.innerHTML = "";
-  listaTimes.innerHTML = "";
-  listaTitulos.innerHTML = "";
-  listaArtilheiros.innerHTML = "";
-  listaMelhores.innerHTML = "";
-}
-
-function carregarCampeonato(campeonato) {
-  const dados = campeonatos[campeonato].times;
-
-  limparConteudoRanking();
-
-  totalTimes.textContent = dados.length;
-  totalTitulos.textContent = dados.reduce((total, time) => total + time.titulos, 0);
-  totalArtilheiros.textContent = dados.length;
-
-  dados.forEach((time) => {
-    const linha = document.createElement("tr");
-
-    linha.innerHTML = `
-      <td>${time.posicao}º</td>
-      <td>${time.nome}</td>
-      <td>${time.pontos}</td>
-      <td>${time.titulos}</td>
-      <td>${time.artilheiro}</td>
-      <td>${time.melhorJogador}</td>
-    `;
-
-    tabelaRanking.appendChild(linha);
-
-    const itemTime = document.createElement("div");
-    itemTime.classList.add("item-lista");
-    itemTime.innerHTML = `
-      <strong>${time.nome}</strong>
-      <span>${time.pontos} pontos</span>
-    `;
-    listaTimes.appendChild(itemTime);
-
-    const itemTitulo = document.createElement("div");
-    itemTitulo.classList.add("item-lista");
-    itemTitulo.innerHTML = `
-      <strong>${time.nome}</strong>
-      <span>${time.titulos} títulos</span>
-    `;
-    listaTitulos.appendChild(itemTitulo);
-
-    const itemArtilheiro = document.createElement("div");
-    itemArtilheiro.classList.add("item-lista");
-    itemArtilheiro.innerHTML = `
-      <strong>${time.artilheiro}</strong>
-      <span>${time.gols} gols - ${time.nome}</span>
-    `;
-    listaArtilheiros.appendChild(itemArtilheiro);
-
-    const itemMelhor = document.createElement("div");
-    itemMelhor.classList.add("item-lista");
-    itemMelhor.innerHTML = `
-      <strong>${time.melhorJogador}</strong>
-      <span>${time.destaque} - ${time.nome}</span>
-    `;
-    listaMelhores.appendChild(itemMelhor);
+  campeonatos.forEach((item) => {
+    item.classList.remove("ativo");
   });
-}
 
-function trocarCampeonato(campeonato, botaoClicado) {
-  carregarCampeonato(campeonato);
-
-  const nomeCampeonato = document.getElementById("nome-campeonato");
-  nomeCampeonato.textContent = campeonatos[campeonato].nome;
-
-  const botoes = document.querySelectorAll(".aba");
   botoes.forEach((botao) => {
-    botao.classList.remove("ativa");
+    botao.classList.remove("active");
   });
 
-  botaoClicado.classList.add("ativa");
+  document.getElementById(campeonato).classList.add("ativo");
+
+  if (campeonato === "brasileirao") {
+    botoes[0].classList.add("active");
+  } else {
+    botoes[1].classList.add("active");
+  }
 }
+
+// ===============================
+// AUTENTICAÇÃO DE USUÁRIO
+// ===============================
+
+function fazerLogin() {
+  const usuario = document.getElementById("login-usuario").value;
+  const senha = document.getElementById("login-senha").value;
+  const mensagem = document.getElementById("mensagem-login");
+  const loginBox = document.getElementById("login-box");
+  const painelAdmin = document.getElementById("painel-admin");
+
+  if (usuario === "admin" && senha === "1234") {
+    mensagem.textContent = "Login realizado com sucesso!";
+    mensagem.style.color = "#22c55e";
+
+    loginBox.classList.add("oculto");
+    painelAdmin.classList.remove("oculto");
+
+    renderizarUsuarios();
+  } else {
+    mensagem.textContent = "Usuário ou senha incorretos.";
+    mensagem.style.color = "#ef4444";
+  }
+}
+
+function fazerLogout() {
+  const loginBox = document.getElementById("login-box");
+  const painelAdmin = document.getElementById("painel-admin");
+  const mensagem = document.getElementById("mensagem-login");
+
+  document.getElementById("login-usuario").value = "";
+  document.getElementById("login-senha").value = "";
+
+  painelAdmin.classList.add("oculto");
+  loginBox.classList.remove("oculto");
+
+  mensagem.textContent = "Você saiu da área autenticada.";
+  mensagem.style.color = "#facc15";
+}
+
+// ===============================
+// GESTÃO DE USUÁRIOS
+// ===============================
 
 function renderizarUsuarios() {
-  tabelaUsuarios.innerHTML = "";
+  const tabela = document.getElementById("tabela-usuarios");
+
+  if (!tabela) {
+    return;
+  }
+
+  tabela.innerHTML = "";
 
   usuarios.forEach((usuario, index) => {
     const linha = document.createElement("tr");
 
-    const classeStatus = usuario.status === "Ativo" ? "status-ativo" : "status-inativo";
-
     linha.innerHTML = `
       <td>${usuario.nome}</td>
       <td>${usuario.email}</td>
-      <td>${usuario.categoria}</td>
-      <td><span class="${classeStatus}">${usuario.status}</span></td>
       <td>
-        <div class="acoes-usuario">
-          <button class="btn-alterar" onclick="alterarUsuario(${index})">Alterar</button>
-          <button class="btn-ativar" onclick="ativarUsuario(${index})">Ativar</button>
-          <button class="btn-inativar" onclick="inativarUsuario(${index})">Inativar</button>
-        </div>
+        <span class="${usuario.status === "Ativo" ? "status-ativo" : "status-inativo"}">
+          ${usuario.status}
+        </span>
+      </td>
+      <td>
+        <button onclick="alterarUsuario(${index})">Alterar</button>
+        <button onclick="ativarUsuario(${index})">Ativar</button>
+        <button onclick="inativarUsuario(${index})">Inativar</button>
       </td>
     `;
 
-    tabelaUsuarios.appendChild(linha);
+    tabela.appendChild(linha);
   });
 }
 
 function cadastrarUsuario() {
-  const nome = nomeUsuario.value.trim();
-  const email = emailUsuario.value.trim();
-  const categoria = categoriaUsuario.value;
+  const nome = document.getElementById("nome-usuario").value;
+  const email = document.getElementById("email-usuario").value;
 
   if (nome === "" || email === "") {
-    alert("Preencha o nome e o e-mail do usuário.");
+    alert("Preencha nome e e-mail para cadastrar o usuário.");
     return;
   }
 
-  const novoUsuario = {
+  usuarios.push({
     nome: nome,
     email: email,
-    categoria: categoria,
     status: "Ativo"
-  };
+  });
 
-  usuarios.push(novoUsuario);
-
-  nomeUsuario.value = "";
-  emailUsuario.value = "";
-  categoriaUsuario.value = "Administrador";
+  document.getElementById("nome-usuario").value = "";
+  document.getElementById("email-usuario").value = "";
 
   renderizarUsuarios();
 
@@ -302,35 +140,37 @@ function cadastrarUsuario() {
 }
 
 function alterarUsuario(index) {
-  const usuario = usuarios[index];
+  const novoNome = prompt("Digite o novo nome do usuário:", usuarios[index].nome);
+  const novoEmail = prompt("Digite o novo e-mail do usuário:", usuarios[index].email);
 
-  const novoNome = prompt("Digite o novo nome do usuário:", usuario.nome);
-  if (novoNome === null || novoNome.trim() === "") {
-    return;
+  if (novoNome && novoEmail) {
+    usuarios[index].nome = novoNome;
+    usuarios[index].email = novoEmail;
+
+    renderizarUsuarios();
+
+    alert("Usuário alterado com sucesso!");
   }
-
-  const novoEmail = prompt("Digite o novo e-mail do usuário:", usuario.email);
-  if (novoEmail === null || novoEmail.trim() === "") {
-    return;
-  }
-
-  usuario.nome = novoNome.trim();
-  usuario.email = novoEmail.trim();
-
-  renderizarUsuarios();
-
-  alert("Usuário alterado com sucesso!");
 }
 
 function ativarUsuario(index) {
   usuarios[index].status = "Ativo";
   renderizarUsuarios();
+
+  alert("Usuário ativado com sucesso!");
 }
 
 function inativarUsuario(index) {
   usuarios[index].status = "Inativo";
   renderizarUsuarios();
+
+  alert("Usuário inativado com sucesso!");
 }
 
-carregarCampeonato("brasileirao");
-renderizarUsuarios();
+// ===============================
+// INICIALIZAÇÃO
+// ===============================
+
+document.addEventListener("DOMContentLoaded", function () {
+  mostrarCampeonato("brasileirao");
+});
